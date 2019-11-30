@@ -1,0 +1,234 @@
+---
+title: "Project 1"
+author: Muhammad Ahsan
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+
+## Cardio Fitness Project
+
+### 1. Project Objective
+The  objective  of  the  report  is  to  explore  the  cardio  data  set  (“CardioGoodFitness”)  in  R  and generate insights about the data set. 
+This exploration report will consists of the following: 
+ 
+  1. Importing the dataset in R      
+  2. Understanding the structure of dataset      
+  3. Graphical exploration      
+  4. Descriptive statistics      
+  5. Insights from the dataset 
+
+### 2. Assumptions
+
+
+
+
+
+
+### 3.  Exploratory Data Analysis – Step by step approach
+A Typical Data exploration activity consists of the following steps: 
+ 
+#### 3.1 Environment Set up and Data Import 
+
+###### Required Libraries 
+
+```{r results='hide', message=FALSE, warning=FALSE}
+##library(readr)
+library(ggplot2)
+library(gridExtra)
+library(corrplot)
+```
+
+
+##### Setting the working Directory and importing the Dataset
+In this chunk we set the working directory and importing the dataset for analysis and we convert the dataset in Data Frames
+
+```{r message = FALSE}
+setwd("F:/DSBA/Project 1")
+cardio_data <- read.csv("CardioGoodFitness.csv")
+cardio_data <- data.frame(cardio_data)
+```
+
+
+#### 3.2 Variable Identification
+we are using "dim()" function to get the dimention or shape of the dataset.
+"names()" this function we going to use is getting the names or columns of the dataset.
+"head()" this function is use for presenting top some rows or observations of the dataset bydefault we ill get top 5 rows but we can add specific also."
+"tail()" retun the last 5 rows by default
+
+dimention of the dataset
+```{r}
+dim(cardio_data)
+```
+
+Columns of the dataset
+```{r}
+names(cardio_data)
+```
+Top 5 rows of the dataset
+```{r}
+head(cardio_data)
+```
+Last 5 rows of the dataset
+```{r}
+tail(cardio_data)
+```
+Convertion of some columns datatype cracter to factor
+```{r}
+cardio_data$Product <- as.factor(cardio_data$Product)
+cardio_data$Gender <- as.factor(cardio_data$Gender)
+cardio_data$MaritalStatus <- as.factor(cardio_data$MaritalStatus)
+cardio_data$Education <- as.factor(cardio_data$Education)
+```
+
+Summary of the data 
+```{r}
+#Statisticl Summary of Dataset
+summary(cardio_data)
+```
+### 3.3  Univariate Analysis
+
+You can also embed plots, for example:
+```{r}
+#Statisticl Summary of Product 
+summary(cardio_data$Product)
+#product plot 
+p<- ggplot(data = cardio_data, aes(x = Product)) + 
+  geom_bar(color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle("Product Plot")+xlab("Product")+
+  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+p
+#p+geom_text()
+    
+```
+
+```{r}
+#Statisticl Summary of Age
+summary(cardio_data$Age)
+#ge plot 
+p1<- ggplot(data = cardio_data, aes(x = Age)) + 
+  geom_histogram(bins = 30, color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle("Histogram of Age")+xlab("Age (Years)")
+#Statisticl Summary of education
+summary(cardio_data$Education)
+#education plot 
+p2<-ggplot(data = cardio_data, aes(x = Education)) + 
+  geom_bar(color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle(" Education Bar plot ")+
+  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+#Statisticl Summary of usage
+summary(cardio_data$Usage)
+#usage plot 
+p3<-ggplot(data = cardio_data, aes(x = Usage)) + 
+  geom_bar(color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle(" Usage of Machines ")+
+  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+#combining the plots
+grid.arrange(p1,p2,p3,ncol=3)
+```
+
+```{r}
+#Statisticl Summary of Gender
+summary(cardio_data$Gender)
+ggplot(data = cardio_data, aes(x = Gender)) + 
+  geom_bar(color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle("Gender Ploting")+
+  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+```
+
+```{r}
+```
+
+```{r}
+#Statisticl Summary of Marital Status
+summary(cardio_data$MaritalStatus)
+#Maritel status plot 
+p1<- ggplot(data = cardio_data, aes(x = MaritalStatus)) + 
+  geom_bar( color="black" ,fill="darkcyan") +
+  theme_grey() + ggtitle("User Marital Status")+
+  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+#Statisticl Summary of income
+summary(cardio_data$Income)
+#Income plot
+p2<- ggplot(data = cardio_data, aes(x = Income)) + 
+  geom_histogram(bins = 50, color="black" ,fill="darkcyan") +
+  theme_grey() + scale_x_continuous(labels = scales::comma) + ggtitle("Histogram Of User Income")
+
+
+p3<- ggplot(data = cardio_data, aes(x = "",y=Income)) + 
+  geom_boxplot(color="black" ,fill="darkcyan") +
+  theme_grey() +  ggtitle("User Income")+ scale_y_continuous(labels = scales::comma) 
+#combining the plots
+grid.arrange(p1,p2,p3,ncol=3)
+```
+
+### 3.4  bivariate Analysis
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Age,cardio_data$Gender,summary)
+ggplot(cardio_data,aes(x= Gender,y=Age)) +geom_boxplot(aes(colour = Gender), outlier.colour = "red",notch=TRUE) 
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Age,cardio_data$Gender,summary)
+ggplot(cardio_data,aes(x= Gender,y=Age)) +geom_boxplot(aes(colour = Education), outlier.colour = "red",notch=FALSE) 
+
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Age,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Age)) +geom_boxplot(aes(colour = Product), outlier.colour = "red",notch=FALSE) 
+
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Fitness,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Fitness)) +geom_point(aes(colour = Product), outlier.colour = "red",notch=FALSE) 
+
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Income,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Income)) +geom_boxplot(aes(colour = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Miles,cardio_data$Gender,summary)
+ggplot(cardio_data,aes(x=Gender ,y=Miles)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+#statistical summary of Age and Gender
+ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +geom_boxplot(aes(fill=Usage), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+#statistical summary of Age and Gender
+  tapply(cardio_data$Fitness,cardio_data$Gender,summary)
+ggplot(cardio_data,aes(x= Gender,y=Fitness)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) 
+```
+
+```{r}
+corrplot(cor(cardio_data[,6:9]))
+```
+
+```{r}
+#statistical summary of Age and Gender
+tapply(cardio_data$Miles,cardio_data$Fitness,summary)
+ggplot(cardio_data,aes(x=factor(Fitness),y=Miles)) +
+  geom_boxplot(aes(fill=MaritalStatus), outlier.colour = "red",notch=FALSE) 
+```
+
+```{r}
+
+```
