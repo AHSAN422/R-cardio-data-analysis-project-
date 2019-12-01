@@ -212,7 +212,7 @@ ggplot(cardio_data,aes(x= Product,y=Age)) +geom_boxplot(aes(colour = Product), o
 In this figure we plot TM type and the user age. so here we will try to find out what is the age group of people or how many people using each paticular machine. 
 As we see the statistical summary and graphical plot TM195 is most popular TM type among user then Tm 498 then TM798 respectively. as we see Tm 195 users are min 18 to 46 year old, TM498 showing almost same resemblance but TM798 is only popular 22 to 37 years old people using it. we also facing some outlier in this plot but most of the outlier belong to TM798. 
 
-
+#### Gender vs Fitness summary and plot 
 
 ```{r}
 #statistical summary of Age and Gender
@@ -223,6 +223,10 @@ tapply(cardio_data$Fitness,cardio_data$age_group,summary)
 
 ```
 
+we divided the age of the users into three age groups and then we check the fitness lavel with the filter of Gender. fit of all we saw male are more fit then female user as compare to age group no female user belong to greater then 35 year old age group. 
+
+#### TM type vs User Income summary and plot
+
 ```{r}
 #statistical summary of income and product
 tapply(cardio_data$Income,cardio_data$Product,summary)
@@ -230,26 +234,37 @@ ggplot(cardio_data,aes(x= Product,y=Income)) +geom_boxplot(aes(colour = Product)
 
 ```
 
+In this plot we find out TM798 only hit the high income customer its client has minimum 48 thousend and toward 1oo plus thousend. TM195 client has low salary as compared to other minimum 29 thousend to 68 thousend.
+
+#### Product vs Usage summary and plot 
+
 ```{r}
-#statistical summary of Miles and Gender
-tapply(cardio_data$Miles,cardio_data$Gender,summary)
-ggplot(cardio_data,aes(x=Gender ,y=Miles)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+#statistical summary of usage and product
+tapply(cardio_data$Usage,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Usage)) +geom_boxplot(aes(fill = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+
 ```
+
+in this plot we analyse TM798 usage is higher the other two products and secound most using by the customer is TM195. 
+
+#### Usage vs Income summary and plot
 
 ```{r}
 #statistical summary of usge and income
 ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +geom_boxplot(aes(fill=Usage), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
 ```
 
-```{r}
-#statistical summary of fitness and Gender
-  tapply(cardio_data$Fitness,cardio_data$Gender,summary)
-ggplot(cardio_data,aes(x= Gender,y=Fitness)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) 
-```
+In this we analyse usage of the treadmill and the customer income has relation between then we saw when ever the income increase the usage of the product also increase.
+
+#### correlation Plot 
 
 ```{r}
 corrplot(cor(cardio_data[,6:9]))
 ```
+
+we draw correlation graph amoung numeric veriables and we find out great positive correlation amoung all of them.
+
+#### Fitness Vs Miles summary and plot 
 
 ```{r}
 #statistical summary of Age and Gender
@@ -258,6 +273,15 @@ ggplot(cardio_data,aes(x=factor(Fitness),y=Miles)) +
   geom_boxplot(aes(fill=MaritalStatus), outlier.colour = "red",notch=FALSE) 
 ```
 
+here we noticed fitness increase with respect to miles increase its shows us positive correlation and we filter it with Marital status. we saw customer who has partnered has more fit and more miles cover as respect to who are single.
+
+#### Fitness vs usage
+
 ```{r}
 plot(aggregate(Fitness~Usage,data= cardio_data,mean),type = "b",main="Fitness vs usage",col="darkcyan")
 ```
+
+we noticed fitness and usage has positive correlation.
+
+### Conclusion
+
