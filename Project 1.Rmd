@@ -2,10 +2,10 @@
 title: "Project 1"
 author: Muhammad Ahsan
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
-  word_document: default
 ---
 
 
@@ -251,10 +251,21 @@ in this plot we analyse TM798 usage is higher the other two products and secound
 
 ```{r}
 #statistical summary of usge and income
-ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +geom_boxplot(aes(fill=Usage), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +
+  geom_point(col="darkcyan")+
+  geom_smooth(method = "lm", se = FALSE)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)
+
 ```
 
 In this we analyse usage of the treadmill and the customer income has relation between then we saw when ever the income increase the usage of the product also increase.
+
+```{r}
+tapply(cardio_data$Fitness,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Fitness)) +geom_boxplot(aes(fill = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+
+```
 
 #### correlation Plot 
 
@@ -267,10 +278,15 @@ we draw correlation graph amoung numeric veriables and we find out great positiv
 #### Fitness Vs Miles summary and plot 
 
 ```{r}
-#statistical summary of Age and Gender
+#statistical summary of miles and fitness
+z <- lm(Fitness ~ Miles, data = cardio_data)
+coef(z)
 tapply(cardio_data$Miles,cardio_data$Fitness,summary)
 ggplot(cardio_data,aes(x=factor(Fitness),y=Miles)) +
-  geom_boxplot(aes(fill=MaritalStatus), outlier.colour = "red",notch=FALSE) 
+  geom_point(aes(shape=factor(MaritalStatus),col=factor(MaritalStatus)))+
+  geom_smooth(method = "lm", se = FALSE)
+  #geom_abline(intercept = 1.81, slope = 0.01)
+
 ```
 
 here we noticed fitness increase with respect to miles increase its shows us positive correlation and we filter it with Marital status. we saw customer who has partnered has more fit and more miles cover as respect to who are single.
@@ -283,5 +299,57 @@ plot(aggregate(Fitness~Usage,data= cardio_data,mean),type = "b",main="Fitness vs
 
 we noticed fitness and usage has positive correlation.
 
+#### Age vs Income plot
+
+```{r}
+ggplot(cardio_data,aes(x=Age ,y=Income)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("Age vs Income Plot ")
+```
+
+we saw some positive correlation between age and income with repect to gender. we also find out the slope of the line in male panel is higher then female panel its mean male age and income has more stronger correlation between them as respect to female.
+
+#### Education vs Income Plot
+
+```{r}
+ggplot(cardio_data,aes(x=Education ,y=Income)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("Education vs Income Plot ")
+```
+
+Education and income also has positive correlation with respect to gender.graph showing us male are getting higher salary then female because the slope of the line is higher in male graph.
+
+#### AGE Vs Miles
+
+```{r}
+ggplot(cardio_data,aes(x=Age ,y=Miles)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("AGE Vs Miles")
+```
+
+here we saw some interesting ehaviour male has positive coorrelationbetween age and miles its mean male customers are covering miles increase with respect to age. But female has negative correlation between age and miles covering.  
+
 ### Conclusion
 
+The data shows prodct TM195 is most popular ine AGE group and on weekly usage basis but product TM195 target only 29 thousend to 70 thousend income customer but with respect to this product TM 798 target much higher range of thecustomer.Product TM798 also gives showing us a good result in weekly useage.But Product TM498 is showing us the negetive correlation in usage and Income sides.
+This data also shows us when we increase the weekly use we increse the miles and also we increase the fitness rate.
+this data shows us the customers who has partenerd spending more time and more fit then those who are single.
+This data tells us male are getting paid more then female customers and female customers reduce the mile with respect to age. 
+
+for the company interest when the company design the new product company has to take attention on female users because female users health condiction is worst then male users. upon the this interest we have to design the product where female users build an interest init and also concider the female users income codition.
+
+
+
+##*************THE END *************
