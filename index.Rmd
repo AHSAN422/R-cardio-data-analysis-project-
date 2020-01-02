@@ -1,11 +1,11 @@
 ---
-title: "Project 1"
+title: "Exploratory Data Analysis"
 author: Muhammad Ahsan
 output:
-  word_document: default
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
+  word_document: default
 ---
 
 
@@ -33,7 +33,7 @@ A Typical Data exploration activity consists of the following steps:
 #### Required Libraries 
 
 ```{r results='hide', message=FALSE, warning=FALSE}
-library(readr)
+#library(readr)
 library(ggplot2)
 library(gridExtra)
 library(corrplot)
@@ -45,7 +45,7 @@ library(scales)
 In this chunk we set the working directory and importing the dataset for analysis and we convert the dataset in Data Frames
 
 ```{r message = FALSE}
-setwd("C:/Users/ahsan/Desktop/Ahsan Per/DSBA Data/Data Sets/Project 1")
+setwd("C:/Users/AHSAN/Documents/R-cardio-data-analysis-project-")
 cardio_data <- read.csv("CardioGoodFitness.csv")
 cardio_data <- data.frame(cardio_data)
 ```
