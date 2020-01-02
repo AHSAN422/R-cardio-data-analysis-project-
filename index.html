@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Muhammad Ahsan" />
+
+
+<title>Exploratory Data Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Cardio Data Analysis Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exploratory Data Analysis</h1>
+<h4 class="author">Muhammad Ahsan</h4>
+
+</div>
+
+
+<div id="cardio-fitness-project" class="section level2">
+<h2>Cardio Fitness Project</h2>
+<div id="project-objective" class="section level3">
+<h3>1. Project Objective</h3>
+<p>The objective of the report is to explore the cardio data set (âCardioGoodFitnessâ) in R and generate insights about the data set. This exploration report will consists of the following:</p>
+<ol style="list-style-type: decimal">
+<li>Importing the dataset in R<br />
+</li>
+<li>Understanding the structure of dataset<br />
+</li>
+<li>Graphical exploration<br />
+</li>
+<li>Descriptive statistics<br />
+</li>
+<li>Insights from the dataset</li>
+</ol>
+</div>
+<div id="assumptions" class="section level3">
+<h3>2. Assumptions</h3>
+<p>we assume data has normally distribution its mean the graph of the data has a bell curve or skewed.data is independent and it has linear relationship.we will do the further analysis to prove our assumstion.</p>
+</div>
+<div id="exploratory-data-analysis-â-step-by-step-approach" class="section level3">
+<h3>3. Exploratory Data Analysis â Step by step approach</h3>
+<p>A Typical Data exploration activity consists of the following steps:</p>
+<div id="environment-set-up-and-data-import" class="section level4">
+<h4>3.1 Environment Set up and Data Import</h4>
+</div>
+<div id="required-libraries" class="section level4">
+<h4>Required Libraries</h4>
+<pre class="r"><code>#library(readr)
+library(ggplot2)
+library(gridExtra)
+library(corrplot)
+library(scales)</code></pre>
+<div id="setting-up-working-directory-and-importing-the-dataset" class="section level5">
+<h5>Setting up working Directory and importing the Dataset</h5>
+<p>In this chunk we set the working directory and importing the dataset for analysis and we convert the dataset in Data Frames</p>
+<pre class="r"><code>setwd(&quot;C:/Users/AHSAN/Documents/R-cardio-data-analysis-project-&quot;)
+cardio_data &lt;- read.csv(&quot;CardioGoodFitness.csv&quot;)
+cardio_data &lt;- data.frame(cardio_data)</code></pre>
+</div>
+</div>
+<div id="variable-identification" class="section level4">
+<h4>3.2 Variable Identification</h4>
+<p>we are using “dim()” function to get the dimention or shape of the dataset. “names()” this function we going to use is getting the names or columns of the dataset. “head()” this function is use for presenting top some rows or observations of the dataset bydefault we ill get top 5 rows but we can add specific also." “tail()” retun the last 5 rows by default</p>
+<p>####dimention of the dataset</p>
+<pre class="r"><code>dim(cardio_data)</code></pre>
+<pre><code>## [1] 180   9</code></pre>
+<p>This data set has 180 observation and 9 veriables/columns.</p>
+<p>####Columns of the dataset</p>
+<pre class="r"><code>names(cardio_data)</code></pre>
+<pre><code>## [1] &quot;Product&quot;       &quot;Age&quot;           &quot;Gender&quot;        &quot;Education&quot;    
+## [5] &quot;MaritalStatus&quot; &quot;Usage&quot;         &quot;Fitness&quot;       &quot;Income&quot;       
+## [9] &quot;Miles&quot;</code></pre>
+<p>####Structure of the dataset</p>
+<pre class="r"><code>str(cardio_data)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    180 obs. of  9 variables:
+##  $ Product      : Factor w/ 3 levels &quot;TM195&quot;,&quot;TM498&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Age          : int  18 19 19 19 20 20 21 21 21 21 ...
+##  $ Gender       : Factor w/ 2 levels &quot;Female&quot;,&quot;Male&quot;: 2 2 1 2 2 1 1 2 2 1 ...
+##  $ Education    : int  14 15 14 12 13 14 14 13 15 15 ...
+##  $ MaritalStatus: Factor w/ 2 levels &quot;Partnered&quot;,&quot;Single&quot;: 2 2 1 2 1 1 1 2 2 1 ...
+##  $ Usage        : int  3 2 4 3 4 3 3 3 5 2 ...
+##  $ Fitness      : int  4 3 3 3 2 3 3 3 4 3 ...
+##  $ Income       : int  29562 31836 30699 32973 35247 32973 35247 32973 35247 37521 ...
+##  $ Miles        : int  112 75 66 85 47 66 75 85 141 85 ...</code></pre>
+<p>####Top 5 rows of the dataset</p>
+<pre class="r"><code>head(cardio_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Product"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Age"],"name":[2],"type":["int"],"align":["right"]},{"label":["Gender"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["Education"],"name":[4],"type":["int"],"align":["right"]},{"label":["MaritalStatus"],"name":[5],"type":["fctr"],"align":["left"]},{"label":["Usage"],"name":[6],"type":["int"],"align":["right"]},{"label":["Fitness"],"name":[7],"type":["int"],"align":["right"]},{"label":["Income"],"name":[8],"type":["int"],"align":["right"]},{"label":["Miles"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"TM195","2":"18","3":"Male","4":"14","5":"Single","6":"3","7":"4","8":"29562","9":"112","_rn_":"1"},{"1":"TM195","2":"19","3":"Male","4":"15","5":"Single","6":"2","7":"3","8":"31836","9":"75","_rn_":"2"},{"1":"TM195","2":"19","3":"Female","4":"14","5":"Partnered","6":"4","7":"3","8":"30699","9":"66","_rn_":"3"},{"1":"TM195","2":"19","3":"Male","4":"12","5":"Single","6":"3","7":"3","8":"32973","9":"85","_rn_":"4"},{"1":"TM195","2":"20","3":"Male","4":"13","5":"Partnered","6":"4","7":"2","8":"35247","9":"47","_rn_":"5"},{"1":"TM195","2":"20","3":"Female","4":"14","5":"Partnered","6":"3","7":"3","8":"32973","9":"66","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>####Last 5 rows of the dataset</p>
+<pre class="r"><code>tail(cardio_data)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Product"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["Age"],"name":[2],"type":["int"],"align":["right"]},{"label":["Gender"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["Education"],"name":[4],"type":["int"],"align":["right"]},{"label":["MaritalStatus"],"name":[5],"type":["fctr"],"align":["left"]},{"label":["Usage"],"name":[6],"type":["int"],"align":["right"]},{"label":["Fitness"],"name":[7],"type":["int"],"align":["right"]},{"label":["Income"],"name":[8],"type":["int"],"align":["right"]},{"label":["Miles"],"name":[9],"type":["int"],"align":["right"]}],"data":[{"1":"TM798","2":"38","3":"Male","4":"18","5":"Partnered","6":"5","7":"5","8":"104581","9":"150","_rn_":"175"},{"1":"TM798","2":"40","3":"Male","4":"21","5":"Single","6":"6","7":"5","8":"83416","9":"200","_rn_":"176"},{"1":"TM798","2":"42","3":"Male","4":"18","5":"Single","6":"5","7":"4","8":"89641","9":"200","_rn_":"177"},{"1":"TM798","2":"45","3":"Male","4":"16","5":"Single","6":"5","7":"5","8":"90886","9":"160","_rn_":"178"},{"1":"TM798","2":"47","3":"Male","4":"18","5":"Partnered","6":"4","7":"5","8":"104581","9":"120","_rn_":"179"},{"1":"TM798","2":"48","3":"Male","4":"18","5":"Partnered","6":"4","7":"5","8":"95508","9":"180","_rn_":"180"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>####Convertion of some columns datatype cracter to factor</p>
+<pre class="r"><code>cardio_data$Product &lt;- as.factor(cardio_data$Product)
+cardio_data$Gender &lt;- as.factor(cardio_data$Gender)
+cardio_data$MaritalStatus &lt;- as.factor(cardio_data$MaritalStatus)
+cardio_data$Education &lt;- as.factor(cardio_data$Education)</code></pre>
+<p>####Summary of the data</p>
+<pre class="r"><code>#Statisticl Summary of Dataset
+summary(cardio_data)</code></pre>
+<pre><code>##   Product        Age           Gender      Education    MaritalStatus
+##  TM195:80   Min.   :18.00   Female: 76   16     :85   Partnered:107  
+##  TM498:60   1st Qu.:24.00   Male  :104   14     :55   Single   : 73  
+##  TM798:40   Median :26.00                18     :23                  
+##             Mean   :28.79                13     : 5                  
+##             3rd Qu.:33.00                15     : 5                  
+##             Max.   :50.00                12     : 3                  
+##                                          (Other): 4                  
+##      Usage          Fitness          Income           Miles      
+##  Min.   :2.000   Min.   :1.000   Min.   : 29562   Min.   : 21.0  
+##  1st Qu.:3.000   1st Qu.:3.000   1st Qu.: 44059   1st Qu.: 66.0  
+##  Median :3.000   Median :3.000   Median : 50597   Median : 94.0  
+##  Mean   :3.456   Mean   :3.311   Mean   : 53720   Mean   :103.2  
+##  3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.: 58668   3rd Qu.:114.8  
+##  Max.   :7.000   Max.   :5.000   Max.   :104581   Max.   :360.0  
+## </code></pre>
+<p>statistical summary tell us the minimum,first qrartile,median, third quartile and maximum value of the dataset.</p>
+</div>
+</div>
+<div id="univariate-analysis" class="section level3">
+<h3>3.3 Univariate Analysis</h3>
+<p>Univerable analysis is using for single or uni veriable of the dataset we also check how veriable is distributed.</p>
+<p>####Products summary and plot:</p>
+<pre class="r"><code>#Statisticl Summary of Product 
+summary(cardio_data$Product)</code></pre>
+<pre><code>## TM195 TM498 TM798 
+##    80    60    40</code></pre>
+<pre class="r"><code>#product plot 
+p&lt;- ggplot(data = cardio_data, aes(x = Product)) + 
+  geom_bar(color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot;Product Plot    fig-(1.1)&quot;)+xlab(&quot;Product&quot;)+
+  geom_text(stat = &#39;count&#39;,aes(label =..count.., vjust = -0.2))
+p</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>as we saw in this graph fig(1.1) we have three products in this dataset one name is TM195,2ND TM498, 3RD TM798. TM195 give us the highest number of count its mean the dataset provided us most of the user using Tm 195 treadmill then Tm498 then tm 798 respectively.</p>
+<p>####Age,Education and Usage sumary and plots</p>
+<pre class="r"><code>#Statisticl Summary of Age
+summary(cardio_data$Age)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   24.00   26.00   28.79   33.00   50.00</code></pre>
+<pre class="r"><code>sd(cardio_data$Age)</code></pre>
+<pre><code>## [1] 6.943498</code></pre>
+<pre class="r"><code>#ge plot 
+p1&lt;- ggplot(data = cardio_data, aes(x = Age)) + 
+  geom_histogram(bins = 30, color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot;Histogram of Age&quot;)+xlab(&quot;Age (Years)&quot;)
+#Statisticl Summary of education
+summary(cardio_data$Education)</code></pre>
+<pre><code>## 12 13 14 15 16 18 20 21 
+##  3  5 55  5 85 23  1  3</code></pre>
+<pre class="r"><code>#education plot 
+p2&lt;-ggplot(data = cardio_data, aes(x = Education)) + 
+  geom_bar(color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot; Education Bar plot &quot;)+
+  geom_text(stat = &#39;count&#39;,aes(label =..count.., vjust = -0.2))
+#Statisticl Summary of usage
+summary(cardio_data$Usage)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.000   3.000   3.000   3.456   4.000   7.000</code></pre>
+<pre class="r"><code>#usage plot 
+p3&lt;-ggplot(data = cardio_data, aes(x = Usage)) + 
+  geom_bar(color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot; Usage of Machines &quot;)+
+  geom_text(stat = &#39;count&#39;,aes(label =percent(round(..count../length(cardio_data$Usage),4)), vjust = -0.3))
+#combining the plots
+grid.arrange(p1,p2,p3,ncol=3)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>if we saw the summary of the age, mean is slightly higher then the median and the distrubtion of the age is right skwed.if we find the coefficient of variation we only have 24%. its tell us sample age is not equally distributed. 2nd towards education plot its tell us the data sample people mostly are the 16 years of education it has 85 counts. 3rd usage of treadmill mostly user use the traedmill 38% of the people using the treadmill three times a week 29% of the people using 4 times a week.18% using only two times.</p>
+<div id="gender-summary-and-plot" class="section level4">
+<h4>Gender summary and plot</h4>
+<pre class="r"><code>#Statisticl Summary of Gender
+summary(cardio_data$Gender)</code></pre>
+<pre><code>## Female   Male 
+##     76    104</code></pre>
+<pre class="r"><code>ggplot(data = cardio_data, aes(x = Gender)) + 
+  geom_bar(color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot;Gender Ploting&quot;)+
+  geom_text(stat = &#39;count&#39;,aes(label =..count.., vjust = -0.2))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>in this ploting the no of male users are 104 and female users are 76.</p>
+<p>####Marital status and income summary and plot</p>
+<pre class="r"><code>#Statisticl Summary of Marital Status
+summary(cardio_data$MaritalStatus)</code></pre>
+<pre><code>## Partnered    Single 
+##       107        73</code></pre>
+<pre class="r"><code>#Maritel status plot 
+p1&lt;- ggplot(data = cardio_data, aes(x = MaritalStatus)) + 
+  geom_bar( color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + ggtitle(&quot;User Marital Status&quot;)+
+  geom_text(stat = &#39;count&#39;,aes(label =..count.., vjust = -0.2))
+#Statisticl Summary of income
+summary(cardio_data$Income)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   29562   44059   50597   53720   58668  104581</code></pre>
+<pre class="r"><code>sd(cardio_data$Income)</code></pre>
+<pre><code>## [1] 16506.68</code></pre>
+<pre class="r"><code>#Income plot
+p2&lt;- ggplot(data = cardio_data, aes(x = Income)) + 
+  geom_histogram(bins = 50, color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() + scale_x_continuous(labels = scales::comma) + ggtitle(&quot;Histogram Of User Income&quot;)
+
+
+p3&lt;- ggplot(data = cardio_data, aes(x = &quot;&quot;,y=Income)) + 
+  geom_boxplot(color=&quot;black&quot; ,fill=&quot;darkcyan&quot;) +
+  theme_grey() +  ggtitle(&quot;User Income&quot;)+ scale_y_continuous(labels = scales::comma) 
+#combining the plots
+grid.arrange(p1,p2,p3,ncol=3)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>107 member has a partenered and 73 persons are single.user income has right skwed distribution because the mean is greater then median and coefficient of variation is 30%.</p>
+</div>
+</div>
+<div id="bivariate-analysis" class="section level3">
+<h3>3.4 bivariate Analysis</h3>
+<pre class="r"><code>#statistical summary of Age and Gender
+tapply(cardio_data$Age,cardio_data$Gender,summary)</code></pre>
+<pre><code>## $Female
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   19.00   24.00   26.50   28.57   33.00   50.00 
+## 
+## $Male
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   23.75   26.00   28.95   34.00   48.00</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x= Gender,y=Age)) +geom_boxplot(aes(colour = Gender), outlier.colour = &quot;red&quot;,notch=TRUE) </code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>this is biveriable / mean two veriable are used to show there relation between them as per the statistical summary of the plot. its between gender vs age. we find out female minimum age we have in this dataset is 19 and maximum is 50 as compare to female male has minimum 18 and maximum 48.male data is more right skwed then female data.this visualization telling us we have one outlier in female category age 50year is beyound the Q3+1.5IQR so we concider it outlier.</p>
+<p>####Age vs Product summary and plot</p>
+<pre class="r"><code>#statistical summary of Age and Product
+tapply(cardio_data$Age,cardio_data$Product,summary)</code></pre>
+<pre><code>## $TM195
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   23.00   26.00   28.55   33.00   50.00 
+## 
+## $TM498
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   19.00   24.00   26.00   28.90   33.25   48.00 
+## 
+## $TM798
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   22.00   24.75   27.00   29.10   30.25   48.00</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x= Product,y=Age)) +geom_boxplot(aes(colour = Product), outlier.colour = &quot;red&quot;,notch=FALSE) </code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>In this figure we plot TM type and the user age. so here we will try to find out what is the age group of people or how many people using each paticular machine. As we see the statistical summary and graphical plot TM195 is most popular TM type among user then Tm 498 then TM798 respectively. as we see Tm 195 users are min 18 to 46 year old, TM498 showing almost same resemblance but TM798 is only popular 22 to 37 years old people using it. we also facing some outlier in this plot but most of the outlier belong to TM798.</p>
+<div id="gender-vs-fitness-summary-and-plot" class="section level4">
+<h4>Gender vs Fitness summary and plot</h4>
+<pre class="r"><code>#statistical summary of Age and Gender
+cardio_data$age_group &lt;- cut(cardio_data$Age, breaks = c(0, 25, 35, 50), 
+                             labels = c(&quot;less then 25&quot;,&quot;25 to 35&quot;,&quot;greater then 35&quot;))
+tapply(cardio_data$Fitness,cardio_data$age_group,summary)</code></pre>
+<pre><code>## $`less then 25`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   3.000   3.000   3.266   4.000   5.000 
+## 
+## $`25 to 35`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   3.000   3.000   3.329   4.000   5.000 
+## 
+## $`greater then 35`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.000   3.000   3.000   3.393   4.000   5.000</code></pre>
+<pre class="r"><code>  ggplot(cardio_data,aes(x= age_group,y=Fitness)) +geom_point(aes(col=Gender))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>we divided the age of the users into three age groups and then we check the fitness lavel with the filter of Gender. fit of all we saw male are more fit then female user as compare to age group no female user belong to greater then 35 year old age group.</p>
+</div>
+<div id="tm-type-vs-user-income-summary-and-plot" class="section level4">
+<h4>TM type vs User Income summary and plot</h4>
+<pre class="r"><code>#statistical summary of income and product
+tapply(cardio_data$Income,cardio_data$Product,summary)</code></pre>
+<pre><code>## $TM195
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   29562   38658   46617   46418   53439   68220 
+## 
+## $TM498
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   31836   44912   49460   48974   53439   67083 
+## 
+## $TM798
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   48556   58205   76569   75442   90886  104581</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x= Product,y=Income)) +geom_boxplot(aes(colour = Product), outlier.colour = &quot;red&quot;,notch=FALSE) + scale_y_continuous(labels = scales::comma)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>In this plot we find out TM798 only hit the high income customer its client has minimum 48 thousend and toward 1oo plus thousend. TM195 client has low salary as compared to other minimum 29 thousend to 68 thousend.</p>
+</div>
+<div id="product-vs-usage-summary-and-plot" class="section level4">
+<h4>Product vs Usage summary and plot</h4>
+<pre class="r"><code>#statistical summary of usage and product
+tapply(cardio_data$Usage,cardio_data$Product,summary)</code></pre>
+<pre><code>## $TM195
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.000   3.000   3.000   3.087   4.000   5.000 
+## 
+## $TM498
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   2.000   3.000   3.000   3.067   3.250   5.000 
+## 
+## $TM798
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   3.000   4.000   5.000   4.775   5.000   7.000</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x= Product,y=Usage)) +geom_boxplot(aes(fill = Product), outlier.colour = &quot;red&quot;,notch=FALSE) + scale_y_continuous(labels = scales::comma)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>in this plot we analyse TM798 usage is higher the other two products and secound most using by the customer is TM195.</p>
+</div>
+<div id="usage-vs-income-summary-and-plot" class="section level4">
+<h4>Usage vs Income summary and plot</h4>
+<pre class="r"><code>#statistical summary of usge and income
+ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +
+  geom_point(col=&quot;darkcyan&quot;)+
+  geom_smooth(method = &quot;lm&quot;, se = FALSE)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>In this we analyse usage of the treadmill and the customer income has relation between then we saw when ever the income increase the usage of the product also increase.</p>
+<pre class="r"><code>tapply(cardio_data$Fitness,cardio_data$Product,summary)</code></pre>
+<pre><code>## $TM195
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   3.000   3.000   2.962   3.000   5.000 
+## 
+## $TM498
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     1.0     3.0     3.0     2.9     3.0     4.0 
+## 
+## $TM798
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   3.000   4.000   5.000   4.625   5.000   5.000</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x= Product,y=Fitness)) +geom_boxplot(aes(fill = Product), outlier.colour = &quot;red&quot;,notch=FALSE) + scale_y_continuous(labels = scales::comma)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="correlation-plot" class="section level4">
+<h4>correlation Plot</h4>
+<pre class="r"><code>corrplot(cor(cardio_data[,6:9]))</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>we draw correlation graph amoung numeric veriables and we find out great positive correlation amoung all of them.</p>
+</div>
+<div id="fitness-vs-miles-summary-and-plot" class="section level4">
+<h4>Fitness Vs Miles summary and plot</h4>
+<pre class="r"><code>#statistical summary of miles and fitness
+z &lt;- lm(Fitness ~ Miles, data = cardio_data)
+coef(z)</code></pre>
+<pre><code>## (Intercept)       Miles 
+##  1.81208079  0.01452627</code></pre>
+<pre class="r"><code>tapply(cardio_data$Miles,cardio_data$Fitness,summary)</code></pre>
+<pre><code>## $`1`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    21.0    27.5    34.0    34.0    40.5    47.0 
+## 
+## $`2`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   38.00   43.25   47.00   51.69   53.00   85.00 
+## 
+## $`3`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   53.00   75.00   85.00   87.19   95.00  170.00 
+## 
+## $`4`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    74.0   106.0   127.0   131.6   160.0   212.0 
+## 
+## $`5`
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    80.0   150.0   170.0   178.9   200.0   360.0</code></pre>
+<pre class="r"><code>ggplot(cardio_data,aes(x=factor(Fitness),y=Miles)) +
+  geom_point(aes(shape=factor(MaritalStatus),col=factor(MaritalStatus)))+
+  geom_smooth(method = &quot;lm&quot;, se = FALSE)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre class="r"><code>  #geom_abline(intercept = 1.81, slope = 0.01)</code></pre>
+<p>here we noticed fitness increase with respect to miles increase its shows us positive correlation and we filter it with Marital status. we saw customer who has partnered has more fit and more miles cover as respect to who are single.</p>
+</div>
+<div id="fitness-vs-usage" class="section level4">
+<h4>Fitness vs usage</h4>
+<pre class="r"><code>plot(aggregate(Fitness~Usage,data= cardio_data,mean),type = &quot;b&quot;,main=&quot;Fitness vs usage&quot;,col=&quot;darkcyan&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>we noticed fitness and usage has positive correlation.</p>
+</div>
+<div id="age-vs-income-plot" class="section level4">
+<h4>Age vs Income plot</h4>
+<pre class="r"><code>ggplot(cardio_data,aes(x=Age ,y=Income)) +
+  geom_point(col=&quot;darkcyan&quot;)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = &quot;lm&quot;, se = FALSE)+
+  theme(strip.background = element_rect(fill=c(&quot;darkcyan&quot;)))+
+  ggtitle(&quot;Age vs Income Plot &quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>we saw some positive correlation between age and income with repect to gender. we also find out the slope of the line in male panel is higher then female panel its mean male age and income has more stronger correlation between them as respect to female.</p>
+</div>
+<div id="education-vs-income-plot" class="section level4">
+<h4>Education vs Income Plot</h4>
+<pre class="r"><code>ggplot(cardio_data,aes(x=Education ,y=Income)) +
+  geom_point(col=&quot;darkcyan&quot;)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = &quot;lm&quot;, se = FALSE)+
+  theme(strip.background = element_rect(fill=c(&quot;darkcyan&quot;)))+
+  ggtitle(&quot;Education vs Income Plot &quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>Education and income also has positive correlation with respect to gender.graph showing us male are getting higher salary then female because the slope of the line is higher in male graph.</p>
+</div>
+<div id="age-vs-miles" class="section level4">
+<h4>AGE Vs Miles</h4>
+<pre class="r"><code>ggplot(cardio_data,aes(x=Age ,y=Miles)) +
+  geom_point(col=&quot;darkcyan&quot;)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = &quot;lm&quot;, se = FALSE)+
+  theme(strip.background = element_rect(fill=c(&quot;darkcyan&quot;)))+
+  ggtitle(&quot;AGE Vs Miles&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>here we saw some interesting ehaviour male has positive coorrelationbetween age and miles its mean male customers are covering miles increase with respect to age. But female has negative correlation between age and miles covering.</p>
+</div>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>The data shows prodct TM195 is most popular ine AGE group and on weekly usage basis but product TM195 target only 29 thousend to 70 thousend income customer but with respect to this product TM 798 target much higher range of thecustomer.Product TM798 also gives showing us a good result in weekly useage.But Product TM498 is showing us the negetive correlation in usage and Income sides. This data also shows us when we increase the weekly use we increse the miles and also we increase the fitness rate. this data shows us the customers who has partenerd spending more time and more fit then those who are single. This data tells us male are getting paid more then female customers and female customers reduce the mile with respect to age.</p>
+<p>for the company interest when the company design the new product company has to take attention on female users because female users health condiction is worst then male users. upon the this interest we have to design the product where female users build an interest init and also concider the female users income codition.</p>
+<p>##*************THE END *************</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
