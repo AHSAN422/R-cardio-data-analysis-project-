@@ -2,17 +2,17 @@
 title: "Project 1"
 author: Muhammad Ahsan
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
-  word_document: default
 ---
 
 
 ## Cardio Fitness Project
 
 ### 1. Project Objective
-The  objective  of  the  report  is  to  explore  the  cardio  data  set  (“CardioGoodFitness”)  in  R  and generate insights about the data set. 
+The  objective  of  the  report  is  to  explore  the  cardio  data  set  (âCardioGoodFitnessâ)  in  R  and generate insights about the data set. 
 This exploration report will consists of the following: 
  
   1. Importing the dataset in R      
@@ -22,32 +22,30 @@ This exploration report will consists of the following:
   5. Insights from the dataset 
 
 ### 2. Assumptions
+we assume data has normally distribution its mean the graph of the data has a bell curve or skewed.data is independent and it has linear relationship.we will do the further analysis to prove our assumstion.
 
 
-
-
-
-
-### 3.  Exploratory Data Analysis – Step by step approach
+### 3.  Exploratory Data Analysis â Step by step approach
 A Typical Data exploration activity consists of the following steps: 
  
 #### 3.1 Environment Set up and Data Import 
 
-###### Required Libraries 
+#### Required Libraries 
 
 ```{r results='hide', message=FALSE, warning=FALSE}
-##library(readr)
+library(readr)
 library(ggplot2)
 library(gridExtra)
 library(corrplot)
+library(scales)
 ```
 
 
-##### Setting the working Directory and importing the Dataset
+##### Setting up working Directory and importing the Dataset
 In this chunk we set the working directory and importing the dataset for analysis and we convert the dataset in Data Frames
 
 ```{r message = FALSE}
-setwd("F:/DSBA/Project 1")
+setwd("C:/Users/ahsan/Desktop/Ahsan Per/DSBA Data/Data Sets/Project 1")
 cardio_data <- read.csv("CardioGoodFitness.csv")
 cardio_data <- data.frame(cardio_data)
 ```
@@ -59,24 +57,30 @@ we are using "dim()" function to get the dimention or shape of the dataset.
 "head()" this function is use for presenting top some rows or observations of the dataset bydefault we ill get top 5 rows but we can add specific also."
 "tail()" retun the last 5 rows by default
 
-dimention of the dataset
+####dimention of the dataset
 ```{r}
 dim(cardio_data)
 ```
+This data set has 180 observation and 9 veriables/columns.
 
-Columns of the dataset
+####Columns of the dataset
 ```{r}
 names(cardio_data)
 ```
-Top 5 rows of the dataset
+####Structure of the dataset
+```{r}
+str(cardio_data)
+```
+
+####Top 5 rows of the dataset
 ```{r}
 head(cardio_data)
 ```
-Last 5 rows of the dataset
+####Last 5 rows of the dataset
 ```{r}
 tail(cardio_data)
 ```
-Convertion of some columns datatype cracter to factor
+####Convertion of some columns datatype cracter to factor
 ```{r}
 cardio_data$Product <- as.factor(cardio_data$Product)
 cardio_data$Gender <- as.factor(cardio_data$Gender)
@@ -84,30 +88,40 @@ cardio_data$MaritalStatus <- as.factor(cardio_data$MaritalStatus)
 cardio_data$Education <- as.factor(cardio_data$Education)
 ```
 
-Summary of the data 
+####Summary of the data 
 ```{r}
 #Statisticl Summary of Dataset
 summary(cardio_data)
 ```
-### 3.3  Univariate Analysis
+statistical summary tell us the minimum,first qrartile,median, third quartile and maximum value of the dataset.
 
-You can also embed plots, for example:
+### 3.3  Univariate Analysis
+Univerable analysis is using for single or uni veriable of the dataset we also check how veriable is distributed.
+
+####Products summary and plot:
+
 ```{r}
 #Statisticl Summary of Product 
 summary(cardio_data$Product)
 #product plot 
 p<- ggplot(data = cardio_data, aes(x = Product)) + 
   geom_bar(color="black" ,fill="darkcyan") +
-  theme_grey() + ggtitle("Product Plot")+xlab("Product")+
+  theme_grey() + ggtitle("Product Plot    fig-(1.1)")+xlab("Product")+
   geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
 p
-#p+geom_text()
+
     
 ```
+
+as we saw in this graph fig(1.1) we have three products in this dataset one name is TM195,2ND TM498, 3RD TM798. TM195 give us the highest number of count its mean the dataset provided us most of the user using Tm 195 treadmill then Tm498 then tm 798 respectively. 
+
+
+####Age,Education and Usage sumary and plots
 
 ```{r}
 #Statisticl Summary of Age
 summary(cardio_data$Age)
+sd(cardio_data$Age)
 #ge plot 
 p1<- ggplot(data = cardio_data, aes(x = Age)) + 
   geom_histogram(bins = 30, color="black" ,fill="darkcyan") +
@@ -125,10 +139,17 @@ summary(cardio_data$Usage)
 p3<-ggplot(data = cardio_data, aes(x = Usage)) + 
   geom_bar(color="black" ,fill="darkcyan") +
   theme_grey() + ggtitle(" Usage of Machines ")+
-  geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
+  geom_text(stat = 'count',aes(label =percent(round(..count../length(cardio_data$Usage),4)), vjust = -0.3))
 #combining the plots
 grid.arrange(p1,p2,p3,ncol=3)
+
 ```
+
+if we saw the summary of the age, mean is slightly higher then the median and the distrubtion of the age is right skwed.if we find the coefficient of variation we only have 24%. its tell us sample age is not  equally distributed. 
+2nd towards education plot its tell us the data sample people mostly are the 16 years of education it has 85 counts.
+3rd usage of treadmill mostly user use the traedmill 38% of the people using the treadmill three times a week 29% of the people using 4 times a week.18% using only two times.
+
+####  Gender summary and plot
 
 ```{r}
 #Statisticl Summary of Gender
@@ -139,8 +160,9 @@ ggplot(data = cardio_data, aes(x = Gender)) +
   geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
 ```
 
-```{r}
-```
+in this ploting the no of male users are 104 and female users are 76.
+
+####Marital status and income summary and plot
 
 ```{r}
 #Statisticl Summary of Marital Status
@@ -152,6 +174,7 @@ p1<- ggplot(data = cardio_data, aes(x = MaritalStatus)) +
   geom_text(stat = 'count',aes(label =..count.., vjust = -0.2))
 #Statisticl Summary of income
 summary(cardio_data$Income)
+sd(cardio_data$Income)
 #Income plot
 p2<- ggplot(data = cardio_data, aes(x = Income)) + 
   geom_histogram(bins = 50, color="black" ,fill="darkcyan") +
@@ -165,6 +188,8 @@ p3<- ggplot(data = cardio_data, aes(x = "",y=Income)) +
 grid.arrange(p1,p2,p3,ncol=3)
 ```
 
+107 member has a partenered and 73 persons are single.user income has right skwed distribution because the mean is greater then median and coefficient of variation is 30%. 
+
 ### 3.4  bivariate Analysis
 
 ```{r}
@@ -173,62 +198,158 @@ tapply(cardio_data$Age,cardio_data$Gender,summary)
 ggplot(cardio_data,aes(x= Gender,y=Age)) +geom_boxplot(aes(colour = Gender), outlier.colour = "red",notch=TRUE) 
 ```
 
-```{r}
-#statistical summary of Age and Gender
-tapply(cardio_data$Age,cardio_data$Gender,summary)
-ggplot(cardio_data,aes(x= Gender,y=Age)) +geom_boxplot(aes(colour = Education), outlier.colour = "red",notch=FALSE) 
+this is biveriable / mean two veriable are used to show there relation between them as per the statistical summary of the plot. its between gender vs age. we find out female minimum age we have in this dataset is 19 and maximum is 50 as compare to female male has minimum 18 and maximum 48.male data is more right skwed then female data.this visualization telling us we have one outlier in female category age 50year is beyound the Q3+1.5IQR so we concider it outlier.
 
-```
+####Age vs Product summary and plot
 
 ```{r}
-#statistical summary of Age and Gender
+#statistical summary of Age and Product
 tapply(cardio_data$Age,cardio_data$Product,summary)
 ggplot(cardio_data,aes(x= Product,y=Age)) +geom_boxplot(aes(colour = Product), outlier.colour = "red",notch=FALSE) 
 
 ```
 
+In this figure we plot TM type and the user age. so here we will try to find out what is the age group of people or how many people using each paticular machine. 
+As we see the statistical summary and graphical plot TM195 is most popular TM type among user then Tm 498 then TM798 respectively. as we see Tm 195 users are min 18 to 46 year old, TM498 showing almost same resemblance but TM798 is only popular 22 to 37 years old people using it. we also facing some outlier in this plot but most of the outlier belong to TM798. 
+
+#### Gender vs Fitness summary and plot 
+
 ```{r}
 #statistical summary of Age and Gender
-tapply(cardio_data$Fitness,cardio_data$Product,summary)
-ggplot(cardio_data,aes(x= Product,y=Fitness)) +geom_point(aes(colour = Product), outlier.colour = "red",notch=FALSE) 
+cardio_data$age_group <- cut(cardio_data$Age, breaks = c(0, 25, 35, 50), 
+                             labels = c("less then 25","25 to 35","greater then 35"))
+tapply(cardio_data$Fitness,cardio_data$age_group,summary)
+  ggplot(cardio_data,aes(x= age_group,y=Fitness)) +geom_point(aes(col=Gender))
 
 ```
 
+we divided the age of the users into three age groups and then we check the fitness lavel with the filter of Gender. fit of all we saw male are more fit then female user as compare to age group no female user belong to greater then 35 year old age group. 
+
+#### TM type vs User Income summary and plot
+
 ```{r}
-#statistical summary of Age and Gender
+#statistical summary of income and product
 tapply(cardio_data$Income,cardio_data$Product,summary)
 ggplot(cardio_data,aes(x= Product,y=Income)) +geom_boxplot(aes(colour = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
 
 ```
 
-```{r}
-#statistical summary of Age and Gender
-tapply(cardio_data$Miles,cardio_data$Gender,summary)
-ggplot(cardio_data,aes(x=Gender ,y=Miles)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
-```
+In this plot we find out TM798 only hit the high income customer its client has minimum 48 thousend and toward 1oo plus thousend. TM195 client has low salary as compared to other minimum 29 thousend to 68 thousend.
+
+#### Product vs Usage summary and plot 
 
 ```{r}
-#statistical summary of Age and Gender
-ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +geom_boxplot(aes(fill=Usage), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+#statistical summary of usage and product
+tapply(cardio_data$Usage,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Usage)) +geom_boxplot(aes(fill = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+
 ```
 
+in this plot we analyse TM798 usage is higher the other two products and secound most using by the customer is TM195. 
+
+#### Usage vs Income summary and plot
+
 ```{r}
-#statistical summary of Age and Gender
-  tapply(cardio_data$Fitness,cardio_data$Gender,summary)
-ggplot(cardio_data,aes(x= Gender,y=Fitness)) +geom_boxplot(aes(fill=Gender), outlier.colour = "red",notch=FALSE) 
+#statistical summary of usge and income
+ggplot(cardio_data,aes(x=factor(Usage) ,y=Income)) +
+  geom_point(col="darkcyan")+
+  geom_smooth(method = "lm", se = FALSE)+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)
+
 ```
+
+In this we analyse usage of the treadmill and the customer income has relation between then we saw when ever the income increase the usage of the product also increase.
+
+```{r}
+tapply(cardio_data$Fitness,cardio_data$Product,summary)
+ggplot(cardio_data,aes(x= Product,y=Fitness)) +geom_boxplot(aes(fill = Product), outlier.colour = "red",notch=FALSE) + scale_y_continuous(labels = scales::comma)
+
+```
+
+#### correlation Plot 
 
 ```{r}
 corrplot(cor(cardio_data[,6:9]))
 ```
 
+we draw correlation graph amoung numeric veriables and we find out great positive correlation amoung all of them.
+
+#### Fitness Vs Miles summary and plot 
+
 ```{r}
-#statistical summary of Age and Gender
+#statistical summary of miles and fitness
+z <- lm(Fitness ~ Miles, data = cardio_data)
+coef(z)
 tapply(cardio_data$Miles,cardio_data$Fitness,summary)
 ggplot(cardio_data,aes(x=factor(Fitness),y=Miles)) +
-  geom_boxplot(aes(fill=MaritalStatus), outlier.colour = "red",notch=FALSE) 
+  geom_point(aes(shape=factor(MaritalStatus),col=factor(MaritalStatus)))+
+  geom_smooth(method = "lm", se = FALSE)
+  #geom_abline(intercept = 1.81, slope = 0.01)
+
 ```
+
+here we noticed fitness increase with respect to miles increase its shows us positive correlation and we filter it with Marital status. we saw customer who has partnered has more fit and more miles cover as respect to who are single.
+
+#### Fitness vs usage
 
 ```{r}
-
+plot(aggregate(Fitness~Usage,data= cardio_data,mean),type = "b",main="Fitness vs usage",col="darkcyan")
 ```
+
+we noticed fitness and usage has positive correlation.
+
+#### Age vs Income plot
+
+```{r}
+ggplot(cardio_data,aes(x=Age ,y=Income)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("Age vs Income Plot ")
+```
+
+we saw some positive correlation between age and income with repect to gender. we also find out the slope of the line in male panel is higher then female panel its mean male age and income has more stronger correlation between them as respect to female.
+
+#### Education vs Income Plot
+
+```{r}
+ggplot(cardio_data,aes(x=Education ,y=Income)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("Education vs Income Plot ")
+```
+
+Education and income also has positive correlation with respect to gender.graph showing us male are getting higher salary then female because the slope of the line is higher in male graph.
+
+#### AGE Vs Miles
+
+```{r}
+ggplot(cardio_data,aes(x=Age ,y=Miles)) +
+  geom_point(col="darkcyan")+
+  scale_y_continuous(labels =scales::comma)+
+  facet_wrap(~ Gender)+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme(strip.background = element_rect(fill=c("darkcyan")))+
+  ggtitle("AGE Vs Miles")
+```
+
+here we saw some interesting ehaviour male has positive coorrelationbetween age and miles its mean male customers are covering miles increase with respect to age. But female has negative correlation between age and miles covering.  
+
+### Conclusion
+
+The data shows prodct TM195 is most popular ine AGE group and on weekly usage basis but product TM195 target only 29 thousend to 70 thousend income customer but with respect to this product TM 798 target much higher range of thecustomer.Product TM798 also gives showing us a good result in weekly useage.But Product TM498 is showing us the negetive correlation in usage and Income sides.
+This data also shows us when we increase the weekly use we increse the miles and also we increase the fitness rate.
+this data shows us the customers who has partenerd spending more time and more fit then those who are single.
+This data tells us male are getting paid more then female customers and female customers reduce the mile with respect to age. 
+
+for the company interest when the company design the new product company has to take attention on female users because female users health condiction is worst then male users. upon the this interest we have to design the product where female users build an interest init and also concider the female users income codition.
+
+
+
+##*************THE END *************
